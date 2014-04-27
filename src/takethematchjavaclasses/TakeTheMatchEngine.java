@@ -12,12 +12,10 @@ package takethematchjavaclasses;
 public class TakeTheMatchEngine {
 
     private boolean gameRuns;
-
     private int matchesLimiter;
     private int matches;
     private int maxMatchesToDraw;
     private double randomNumber;
-
     private int playerMatchesDrawn;
     private boolean playerTurn;
     private int aiPlayerMatchesDrawn;
