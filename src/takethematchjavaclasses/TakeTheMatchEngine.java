@@ -11,7 +11,7 @@ package takethematchjavaclasses;
  */
 public class TakeTheMatchEngine {
 
-    private boolean gameRuns;
+   private boolean gameRuns;
     private int matchesLimiter;
     private int matches;
     private int maxMatchesToDraw;
@@ -24,7 +24,7 @@ public class TakeTheMatchEngine {
     private int inverseGameplay;
     private int aiHardness;
 
-    public TakeTheMatchEngine(int MaxMatchesToDraw, int MatchesLimiter, boolean playerStart, boolean InverseGamePlay, int AiHardness) {
+    public TakeTheMatchEngine(int MaxMatchesToDraw, int MatchesLimiter, boolean playerStart, boolean InverseGamePlay, int AiHardness, boolean useRandomizerFactor) {
         gameRuns = true;
         if (MatchesLimiter > 0) {
             matchesLimiter = MatchesLimiter;
@@ -37,10 +37,16 @@ public class TakeTheMatchEngine {
             maxMatchesToDraw = 3;
         }
 
-        while (matches < matchesLimiter / 2) {
-            randomNumber = Math.random();
-            matches = (int) (MatchesLimiter * randomNumber);
+        if (useRandomizerFactor) {
+            while (matches < matchesLimiter / 2 || matches/5 < maxMatchesToDraw) {
+                randomNumber = Math.random();
+                matches = (int) (MatchesLimiter * randomNumber);
+            }
+        } else {
+            randomNumber = 0;
+            matches = MatchesLimiter;
         }
+
         if (AiHardness <= 3 && AiHardness >= 1) {
             aiHardness = AiHardness;
         } else {
@@ -67,7 +73,7 @@ public class TakeTheMatchEngine {
 
     }
 
-    public void RestartGame(int MaxMatchesToDraw, int MatchesLimiter, boolean playerStart, boolean InverseGamePlay, int AiHardness) {
+    public void RestartGame(int MaxMatchesToDraw, int MatchesLimiter, boolean playerStart, boolean InverseGamePlay, int AiHardness, boolean useRandomizerFactor) {
         gameRuns = true;
         if (MatchesLimiter > 0) {
             matchesLimiter = MatchesLimiter;
@@ -80,10 +86,16 @@ public class TakeTheMatchEngine {
             maxMatchesToDraw = 3;
         }
 
-        while (matches < matchesLimiter / 2) {
-            randomNumber = Math.random();
-            matches = (int) (MatchesLimiter * randomNumber);
+        if (useRandomizerFactor) {
+            while (matches < matchesLimiter / 2 || matches/5 < maxMatchesToDraw) {
+                randomNumber = Math.random();
+                matches = (int) (MatchesLimiter * randomNumber);
+            }
+        } else {
+            randomNumber = 0;
+            matches = MatchesLimiter;
         }
+
         if (AiHardness <= 3 && AiHardness >= 1) {
             aiHardness = AiHardness;
         } else {
@@ -123,7 +135,6 @@ public class TakeTheMatchEngine {
     }
 
     /**
-     *
      * @param MatchesToDraw
      */
     public void play(int MatchesToDraw) {
@@ -186,7 +197,11 @@ public class TakeTheMatchEngine {
     }
 
     public boolean getPlayerWonTheGame() {
-        if (playerTurn == false && matches == 0) {
+
+
+        if (inverseGameplay ==0 &&!playerTurn && matches == 0) {
+            return true;
+        } if (inverseGameplay ==1 &&playerTurn && matches == 0) {
             return true;
         } else {
             return false;
@@ -195,29 +210,31 @@ public class TakeTheMatchEngine {
 
     private int playAI() {
         int matchestodraw = 0;
+
         for (int i = 1; i <= maxMatchesToDraw; i++) {
             if (aiHardness >= 1) {
-                if (matches == 0) {
-                    matchestodraw = 0;
+
+                //inverseGameplay = 0;  normal gameplay
+                //inverseGameplay =1; inverted gameplay
+                if (matches - i == 0 + inverseGameplay) {
+                    matchestodraw = i;
                     break;
+
                 }
 
-                if (matches - i == 0) {
-                    matchestodraw = i - inverseGameplay;
-                    break;
-                }
+
             }
 
             if (aiHardness >= 2) {
 
-                if ((matches % (maxMatchesToDraw + 1)) == 0) {
+                if ((matches % (maxMatchesToDraw + 1 + inverseGameplay)) == 0) {
                     matchestodraw = maxMatchesToDraw;
                     break;
                 }
             }
             if (aiHardness >= 3) {
 
-                if ((matches - i) % (maxMatchesToDraw + 1) == 0) {
+                if ((matches - i) % (maxMatchesToDraw + 1 + inverseGameplay) == 0) {
                     matchestodraw = i;
                     break;
                 }
@@ -229,7 +246,10 @@ public class TakeTheMatchEngine {
             return matchestodraw;
 
         } else {
+
+
             matchestodraw = (int) (Math.random() * maxMatchesToDraw);
+
             return matchestodraw;
         }
 
@@ -250,6 +270,23 @@ public class TakeTheMatchEngine {
         } else {
             return false;
         }
+    }
+
+
+    public String getDebugginInfo() {
+        return
+                "gameRuns: " + gameRuns + "\n" +
+                        "matchesLimiter: " + matchesLimiter + "\n" +
+                        "matches: " + matches + "\n" +
+                        "maxMatchesToDraw: " + maxMatchesToDraw + "\n" +
+                        "randomNumber: " + randomNumber + "\n" +
+                        "playerMatchesDrawn: " + playerMatchesDrawn + "\n" +
+                        "playerTurn: " + playerTurn + "\n" +
+                        "aiPlayerMatchesDrawn: " + aiPlayerMatchesDrawn + "\n" +
+                        "aiPlayerTurn: " + aiPlayerTurn + "\n" +
+                        "invertedStart: " + invertedStart + "\n" +
+                        "inverseGameplay: " + inverseGameplay + "\n" +
+                        "aiHardness: " + aiHardness;
     }
 
 }

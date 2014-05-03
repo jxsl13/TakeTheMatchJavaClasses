@@ -24,8 +24,9 @@ public class Run {
         boolean playStarts = true;
         boolean inversedGameplay = false;
         byte hardness = 3;
-
-        TakeTheMatchEngine Game = new TakeTheMatchEngine(maxMatchesToDrawAtOnce, matchesLimit, playStarts, inversedGameplay, hardness);
+        boolean useRandomFactor = true;
+                
+        TakeTheMatchEngine Game = new TakeTheMatchEngine(maxMatchesToDrawAtOnce, matchesLimit, playStarts, inversedGameplay, hardness, useRandomFactor);
         System.out.println("New Game Created Successfully!");
 
         if (inversedGameplay == false) {
